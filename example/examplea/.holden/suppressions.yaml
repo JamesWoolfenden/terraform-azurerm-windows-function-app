@@ -1,0 +1,28 @@
+suppressions:
+  - policy_id: HLD_AZ_085
+    resource_id: azurerm_storage_account.function
+    reason: "Example fixture storage account. A customer-managed key needs a Key Vault, key and access policy, which is out of scope for a function app module example; Microsoft-managed keys with infrastructure encryption are used."
+
+  - policy_id: HLD_AZ_200
+    resource_id: azurerm_storage_account.function
+    reason: "Example fixture storage account. Public network access is disabled and network rules default to Deny; a private endpoint and private DNS zone are deployment-specific and out of scope for the module example."
+
+  - policy_id: HLD_TF_026
+    resource_id: module.windows-function-app
+    reason: "The example intentionally calls the module under test via the relative path ../../ so it always exercises the working tree."
+
+  - policy_id: HLD_TF_050
+    resource_id: module.windows-function-app.var.cors_support_credentials
+    reason: "False positive: cors_support_credentials is a bool that toggles the CORS Access-Control-Allow-Credentials header, it holds no secret. holden matches on the word 'credentials' in the name."
+
+  - policy_id: HLD_TF_063_HIGH
+    resource_id: module.windows-function-app.azurerm_windows_function_app.this
+    reason: "By design: the module exposes every security-relevant function app attribute as an input, so the resource carries dynamic blocks for optional ip_restriction, cors, storage_account, connection_string, backup, sticky_settings and active_directory_v2. The complexity is the module interface."
+
+  - policy_id: HLD_TF_063_HIGH
+    resource_id: module.windows-function-app.azurerm_windows_function_app_slot.this
+    reason: "By design: the slot mirrors the main function app's security settings, so it carries the same optional dynamic blocks (see the azurerm_windows_function_app suppression)."
+
+  - policy_id: HLD_TF_077
+    resource_id: workspace
+    reason: "The average is driven by the function app and slot resources, whose dynamic blocks are the module interface (see HLD_TF_063_HIGH); the example's own resources are flat."
